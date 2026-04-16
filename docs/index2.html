@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>攝影機串流與事件通知平台｜專題提案</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 60px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #0ea5e9, #020617);
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 15px;
+      background: #111827;
+      position: sticky;
+      top: 0;
+    }
+
+    nav a {
+      color: #e2e8f0;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+
+    nav a:hover {
+      background: #334155;
+    }
+
+    section {
+      max-width: 1000px;
+      margin: auto;
+      padding: 60px 20px;
+    }
+
+    h2 {
+      border-left: 4px solid #38bdf8;
+      padding-left: 10px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .box {
+      padding: 15px 25px;
+      background: #334155;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .arrow {
+      font-size: 24px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>攝影機串流與事件通知平台</h1>
+  <p>即時影像串流與智慧事件感知系統</p>
+</header>
+
+<nav>
+  <a href="#goal">目標</a>
+  <a href="#feature">系統功能</a>
+  <a href="#flow">流程架構</a>
+  <a href="#materials">材料</a>
+</nav>
+
+<section id="goal">
+  <h2>專題目標</h2>
+  <div class="card">
+    <ul>
+      <li>建立即時攝影機串流系統</li>
+      <li>分析影像並產生事件（movement / detection）</li>
+      <li>將事件即時推送至後端系統</li>
+      <li>建立可視化儀表板顯示影像與事件</li>
+      <li>實現事件通知（警告 / 提示）</li>
+    </ul>
+  </div>
+</section>
+
+<section id="feature">
+  <h2>系統功能</h2>
+  <div class="card">
+    <ul>
+      <li><b>即時影像串流：</b> 支援 Webcam 或 Raspberry Pi Camera</li>
+      <li><b>動態偵測：</b> 偵測畫面中是否有移動物體</li>
+      <li><b>事件產生：</b> 將偵測結果轉換為事件（JSON）</li>
+      <li><b>事件通知：</b> 即時推送至前端或訊息系統</li>
+      <li><b>資料記錄：</b> 將事件與截圖儲存於資料庫</li>
+      <li><b>Dashboard：</b> 顯示影像串流與事件列表</li>
+    </ul>
+  </div>
+</section>
+
+<section id="flow">
+  <h2>流程架構</h2>
+  <div class="card">
+    <div class="diagram">
+      <div class="box">Camera</div>
+      <div class="arrow">↓</div>
+      <div class="box">影像串流（HTTP / RTSP）</div>
+      <div class="arrow">↓</div>
+      <div class="box">AI / OpenCV 分析</div>
+      <div class="arrow">↓</div>
+      <div class="box">事件產生（MQTT / HTTP）</div>
+      <div class="arrow">↓</div>
+      <div class="box">Server（Flask / Django）</div>
+      <div class="arrow">↓</div>
+      <div class="box">Dashboard / 通知系統</div>
+    </div>
+  </div>
+</section>
+
+<section id="materials">
+  <h2>材料與設備</h2>
+  <div class="card">
+    <ul>
+      <li>Raspberry Pi 4 / 5</li>
+      <li>USB Webcam 或 Pi Camera</li>
+      <li>Python（OpenCV / Flask）</li>
+      <li>MQTT Broker（Mosquitto）</li>
+      <li>資料庫（MariaDB）</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  攝影機串流與事件通知平台｜專題提案
+</footer>
+
+</body>
+</html>
