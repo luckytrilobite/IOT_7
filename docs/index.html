@@ -3,159 +3,215 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>人物標記系統｜專題提案</title>
+  <title>智慧影像監控系統</title>
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: "Noto Sans TC", Arial, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
-      line-height: 1.6;
+      padding: 0;
     }
 
-    header {
-      padding: 60px 20px;
+    body {
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      background: linear-gradient(180deg, #0f172a 0%, #111827 55%, #0b1120 100%);
+      color: #e5e7eb;
+      line-height: 1.8;
+    }
+
+    .container {
+      width: min(1000px, 92%);
+      margin: 0 auto;
+      padding: 56px 0 80px;
+    }
+
+    .hero {
       text-align: center;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
+      margin-bottom: 36px;
+      padding: 28px 20px;
     }
 
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      padding: 15px;
-      background: #111827;
-      position: sticky;
+    .hero .tag {
+      display: inline-block;
+      font-size: 0.9rem;
+      letter-spacing: 0.18em;
+      color: #93c5fd;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      color: #f8fafc;
+      margin-bottom: 12px;
+      font-weight: 800;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 0 auto;
+      color: #cbd5e1;
+      font-size: 1.05rem;
+    }
+
+    .section {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 22px;
+      padding: 30px 28px;
+      margin-top: 24px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(6px);
+    }
+
+    .section h2 {
+      color: #93c5fd;
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+      border-left: 5px solid #60a5fa;
+      padding-left: 12px;
+    }
+
+    .section p {
+      color: #e2e8f0;
+      font-size: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    li {
+      position: relative;
+      padding-left: 20px;
+      margin: 10px 0;
+      color: #e2e8f0;
+    }
+
+    li::before {
+      content: "•";
+      color: #60a5fa;
+      font-weight: bold;
+      position: absolute;
+      left: 0;
       top: 0;
     }
 
-    nav a {
-      color: #e2e8f0;
-      text-decoration: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-    }
-
-    nav a:hover {
-      background: #334155;
-    }
-
-    section {
-      max-width: 1000px;
-      margin: auto;
-      padding: 60px 20px;
-    }
-
-    h2 {
-      border-left: 4px solid #38bdf8;
-      padding-left: 10px;
-      margin-bottom: 20px;
-    }
-
-    .card {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-
-    .diagram {
+    .flow-diagram {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
-      margin-top: 20px;
+      gap: 10px;
+      margin-top: 6px;
     }
 
-    .box {
-      padding: 15px 25px;
-      background: #334155;
-      border-radius: 10px;
+    .flow-box {
+      width: min(100%, 760px);
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid rgba(96, 165, 250, 0.28);
+      border-radius: 16px;
+      padding: 16px 18px;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .flow-box .text {
+      flex: 1;
       text-align: center;
     }
 
-    .arrow {
-      font-size: 24px;
+    .flow-arrow {
+      font-size: 1.8rem;
+      color: #60a5fa;
+      line-height: 1;
+      font-weight: 700;
     }
 
-    footer {
+    .footer {
       text-align: center;
-      padding: 30px;
-      color: #64748b;
-      font-size: 0.9rem;
+      margin-top: 30px;
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding-top: 36px;
+      }
+
+      .section {
+        padding: 22px 18px;
+      }
+
+      .hero {
+        padding: 10px 6px 20px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <header class="hero">
+      <div class="tag">IoT Project</div>
+      <h1>智慧影像監控系統</h1>
+      <p>
+        以 Raspberry Pi 與相機模組為核心，建構可即時辨識人物或目標物件的智慧監控原型，
+        並在偵測到目標後進行警示與影像紀錄。
+      </p>
+    </header>
 
-<header>
-  <h1>人物標記系統</h1>
-  <p>多節點影像共享與標記 HUD 系統</p>
-</header>
+    <section class="section">
+      <h2>目標</h2>
+      <p>
+        建立一套可即時監控環境畫面的智慧影像監控系統，利用影像辨識技術判斷畫面中是否出現人物或特定物件，
+        並在偵測到目標時立即執行警示與紀錄功能，作為智慧居家與安全監控的基礎原型。
+      </p>
+    </section>
 
-<nav>
-  <a href="#goal">目標</a>
-  <a href="#feature">系統功能</a>
-  <a href="#flow">流程架構</a>
-  <a href="#materials">材料</a>
-</nav>
+    <section class="section">
+      <h2>材料</h2>
+      <ul>
+        <li>Raspberry Pi 4 / 5</li>
+        <li>Raspberry Pi Camera 模組或 USB Webcam</li>
+        <li>LED 指示燈</li>
+        <li>蜂鳴器</li>
+        <li>伺服馬達（進階擴充，可選）</li>
+        <li>Python 與影像辨識模型環境</li>
+      </ul>
+    </section>
 
-<section id="goal">
-  <h2>專題目標</h2>
-  <div class="card">
-    <ul>
-      <li>建立多個攝影裝置（2 節點）同步影像系統</li>
-      <li>即時辨識每個畫面中的人位置</li>
-      <li>假如被掩蔽 標示由紅變黃再變綠</li>
-      <li>整合所有節點資訊並共享至系統</li>
-      <li>在個人 HUD(用電腦螢幕模擬) 上顯示人物標記</li>
-    </ul>
+    <section class="section">
+      <h2>系統功能</h2>
+      <ul>
+        <li>即時影像擷取</li>
+        <li>人物或目標物件辨識</li>
+        <li>偵測到目標時啟動燈光或蜂鳴器警示</li>
+        <li>擷取事件畫面並保存</li>
+        <li>可延伸為雲端通知或鏡頭追蹤系統</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>流程架構</h2>
+      <div class="flow-diagram">
+        <div class="flow-box"><div class="text">相機持續擷取監控畫面</div></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-box"><div class="text">Raspberry Pi 接收影像資料</div></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-box"><div class="text">影像辨識模型分析畫面內容</div></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-box"><div class="text">判斷是否出現人物或指定物件</div></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-box"><div class="text">若偵測成功，啟動警示並保存影像</div></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-box"><div class="text">將結果顯示於監控介面</div></div>
+      </div>
+    </section>
+
+    <div class="footer">智慧影像監控系統｜專題提案</div>
   </div>
-</section>
-
-<section id="feature">
-  <h2>系統功能</h2>
-  <div class="card">
-    <ul>
-      <li><b>多攝影節點：</b> 支援 N 個 ESP32-CAM 同時上傳影像</li>
-      <li><b>敵人偵測：</b> 每個節點畫面進行辨識</li>
-      <li><b>位置標記：</b> 在畫面中標示人 bounding box</li>
-      <li><b>資訊整合：</b> 將所有節點結果集中處理</li>
-      <li><b>HUD 顯示：</b> 在個人螢幕顯示人位置（模擬戰術介面）</li>
-    </ul>
-  </div>
-</section>
-
-<section id="flow">
-  <h2>流程架構</h2>
-  <div class="card">
-    <div class="diagram">
-        <img src="./image.png" alt="">
-    </div>
-  </div>
-</section>
-
-<section id="materials">
-  <h2>材料與設備</h2>
-  <div class="card">
-    <ul>
-      <li>ESP32-CAM（2個， 或替代品）</li>
-      <li>Raspberry Pi 4 / 5</li>
-    </ul>
-  </div>
-</section>
-
-<section id="materials">
-  <h2>next</h2>
-  <div class="card">
-    <a href="./index2.html">前往下一頁</a>
-  </div>
-</section>
-
-<footer>
-  人物標記系統｜專題提案
-</footer>
-
 </body>
 </html>
