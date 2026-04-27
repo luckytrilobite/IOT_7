@@ -3,211 +3,502 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>智慧影像監控系統</title>
+  <title>智慧影像監控系統｜專題提案</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-1: #07111f;
+      --bg-2: #0c1729;
+      --bg-3: #101b2d;
+      --card: rgba(15, 23, 42, 0.78);
+      --card-2: rgba(30, 41, 59, 0.82);
+      --line: rgba(148, 163, 184, 0.18);
+      --primary: #60a5fa;
+      --primary-soft: #bfdbfe;
+      --text: #e8eef9;
+      --subtext: #cbd5e1;
+      --muted: #94a3b8;
+      --shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
     }
 
     body {
       font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
-      background: linear-gradient(180deg, #0f172a 0%, #111827 55%, #0b1120 100%);
-      color: #e5e7eb;
-      line-height: 1.8;
+      color: var(--text);
+      line-height: 1.85;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(96,165,250,.10), transparent 24%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
     }
 
     .container {
-      width: min(1000px, 92%);
+      width: min(1160px, 92%);
       margin: 0 auto;
-      padding: 56px 0 80px;
+      padding: 34px 0 72px;
     }
 
     .hero {
-      text-align: center;
-      margin-bottom: 36px;
-      padding: 28px 20px;
+      position: relative;
+      overflow: hidden;
+      padding: 40px 40px 34px;
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(29,78,216,.22), rgba(15,23,42,.88)),
+        rgba(15,23,42,.92);
+      border: 1px solid rgba(147,197,253,.16);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
     }
 
-    .hero .tag {
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(10px);
+      opacity: .36;
+    }
+
+    .hero::before {
+      width: 240px;
+      height: 240px;
+      right: -72px;
+      top: -84px;
+      background: radial-gradient(circle, rgba(96,165,250,.76), transparent 60%);
+    }
+
+    .hero::after {
+      width: 180px;
+      height: 180px;
+      left: -55px;
+      bottom: -60px;
+      background: radial-gradient(circle, rgba(37,99,235,.72), transparent 60%);
+    }
+
+    .tag {
       display: inline-block;
-      font-size: 0.9rem;
-      letter-spacing: 0.18em;
-      color: #93c5fd;
-      margin-bottom: 12px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(96,165,250,.12);
+      border: 1px solid rgba(147,197,253,.18);
+      color: var(--primary-soft);
+      letter-spacing: .12em;
       text-transform: uppercase;
+      font-size: .9rem;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
     }
 
-    .hero h1 {
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      color: #f8fafc;
-      margin-bottom: 12px;
-      font-weight: 800;
+    h1 {
+      font-size: clamp(2.35rem, 5vw, 4.1rem);
+      line-height: 1.14;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
     }
 
-    .hero p {
-      max-width: 760px;
-      margin: 0 auto;
-      color: #cbd5e1;
+    .hero-desc {
+      max-width: 900px;
+      color: var(--subtext);
       font-size: 1.05rem;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 22px;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 18px;
+    }
+
+    .hero-card {
+      background: rgba(8,17,32,.42);
+      border: 1px solid rgba(148,163,184,.16);
+      border-radius: 22px;
+      padding: 22px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-card h3 {
+      color: var(--primary-soft);
+      font-size: 1.08rem;
+      margin-bottom: 8px;
+    }
+
+    .hero-card p {
+      color: var(--subtext);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .chip {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(37,99,235,.12);
+      border: 1px solid rgba(96,165,250,.18);
+      color: #dbeafe;
+      font-size: .92rem;
     }
 
     .section {
-      background: rgba(15, 23, 42, 0.72);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      border-radius: 22px;
-      padding: 30px 28px;
-      margin-top: 24px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(6px);
+      margin-top: 22px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 28px 26px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
     }
 
-    .section h2 {
-      color: #93c5fd;
-      font-size: 1.6rem;
-      margin-bottom: 16px;
-      border-left: 5px solid #60a5fa;
-      padding-left: 12px;
-    }
-
-    .section p {
-      color: #e2e8f0;
-      font-size: 1rem;
-    }
-
-    ul {
-      list-style: none;
-      margin-top: 8px;
-    }
-
-    li {
-      position: relative;
-      padding-left: 20px;
-      margin: 10px 0;
-      color: #e2e8f0;
-    }
-
-    li::before {
-      content: "•";
-      color: #60a5fa;
-      font-weight: bold;
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-
-    .flow-diagram {
+    .section-title {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .section-no {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 10px 20px rgba(37,99,235,.26);
+      flex-shrink: 0;
+    }
+
+    .section-title h2 {
+      color: var(--primary-soft);
+      font-size: 1.56rem;
+      line-height: 1.2;
+    }
+
+    .section p,
+    .section li { color: var(--text); }
+
+    .section p + p { margin-top: 12px; }
+
+    .list {
+      list-style: none;
       margin-top: 6px;
     }
 
-    .flow-box {
-      width: min(100%, 760px);
-      background: rgba(30, 41, 59, 0.95);
-      border: 1px solid rgba(96, 165, 250, 0.28);
-      border-radius: 16px;
-      padding: 16px 18px;
-      color: #e2e8f0;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    .list li {
+      position: relative;
+      padding-left: 22px;
+      margin: 10px 0;
     }
 
-    .flow-box .text {
-      flex: 1;
+    .list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .highlight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .highlight-card,
+    .member-card {
+      background: var(--card-2);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .highlight-card h3,
+    .member-card h3 {
+      font-size: 1.06rem;
+      color: #f8fbff;
+      margin-bottom: 8px;
+    }
+
+    .highlight-card p,
+    .member-card p {
+      color: var(--subtext);
+    }
+
+    .flow-panel {
+      margin-top: 10px;
+      background: rgba(2, 6, 23, .56);
+      border: 1px solid rgba(96,165,250,.2);
+      border-radius: 20px;
+      padding: 18px;
+      overflow-x: auto;
+    }
+
+    .flow-panel svg {
+      width: 100%;
+      min-width: 900px;
+      height: auto;
+      display: block;
+    }
+
+    .flow-note {
+      margin-top: 12px;
+      color: var(--subtext);
+      font-size: .96rem;
       text-align: center;
     }
 
-    .flow-arrow {
-      font-size: 1.8rem;
-      color: #60a5fa;
-      line-height: 1;
-      font-weight: 700;
+    .image-frame {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 22px;
+      background: rgba(2, 6, 23, .52);
+      border: 1px solid rgba(96,165,250,.18);
+    }
+
+    .diagram-image {
+      width: 100%;
+      display: block;
+      border-radius: 16px;
+      border: 1px solid rgba(96,165,250,.20);
+      box-shadow: 0 14px 30px rgba(0,0,0,.26);
+      background: rgba(2,6,23,.9);
+    }
+
+    .caption {
+      margin-top: 12px;
+      color: var(--subtext);
+      text-align: center;
+      font-size: .96rem;
+    }
+
+    .member-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .member-role {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(96,165,250,.10);
+      border: 1px solid rgba(96,165,250,.18);
+      color: var(--primary-soft);
+      font-size: .82rem;
     }
 
     .footer {
       text-align: center;
       margin-top: 30px;
-      color: #94a3b8;
-      font-size: 0.95rem;
+      padding-top: 18px;
+      border-top: 1px solid rgba(148,163,184,.12);
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .highlight-grid,
+      .member-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 640px) {
-      .container {
-        padding-top: 36px;
-      }
-
-      .section {
-        padding: 22px 18px;
-      }
-
-      .hero {
-        padding: 10px 6px 20px;
-      }
+      .container { padding-top: 22px; }
+      .hero { padding: 28px 20px 24px; border-radius: 22px; }
+      .section { padding: 22px 18px; border-radius: 20px; }
+      .section-no { width: 38px; height: 38px; border-radius: 12px; }
+      .section-title h2 { font-size: 1.4rem; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header class="hero">
-      <div class="tag">IoT Project</div>
+      <div class="tag">IoT Project Proposal</div>
       <h1>智慧影像監控系統</h1>
-      <p>
-        以 Raspberry Pi 與相機模組為核心，建構可即時辨識人物或目標物件的智慧監控原型，
-        並在偵測到目標後進行警示與影像紀錄。
+      <p class="hero-desc">
+        本專題以工廠或實驗室為應用場域，結合 USB 攝影機、雙 Raspberry Pi 架構與 AI 影像辨識模型，
+        建立可即時偵測異常人員侵入，並將事件資訊與警示結果傳送至監控室的智慧監控系統。
       </p>
+      <div class="hero-grid">
+        <div class="hero-card">
+          <h3>專題核心概念</h3>
+          <p>
+            現場端由攝影 Pi 接收 USB 攝影機影像，再交由節點 Pi 執行 AI 人物辨識。
+            當系統判定為異常事件時，會保留事件片段並傳送至後端與監控室，進一步觸發指示燈、蜂鳴器與監控畫面顯示。
+          </p>
+          <div class="chips">
+            <span class="chip">異常人員侵入偵測</span>
+            <span class="chip">USB 攝影機 × 雙 Pi</span>
+            <span class="chip">監控室警示通知</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h3>專題特色</h3>
+          <p>
+            本網站以簡報風格整合目標、應用情境、材料、系統功能、流程架構、平面配置圖與組員分工，
+            方便用於課堂展示、GitHub Pages 發表與期末提案說明。
+          </p>
+        </div>
+      </div>
     </header>
 
     <section class="section">
-      <h2>目標</h2>
+      <div class="section-title"><div class="section-no">01</div><h2>目標</h2></div>
       <p>
-        建立一套可即時監控環境畫面的智慧影像監控系統，利用影像辨識技術判斷畫面中是否出現人物或特定物件，
-        並在偵測到目標時立即執行警示與紀錄功能，作為智慧居家與安全監控的基礎原型。
+        建立一套可即時監控工廠或實驗室入口區與限制區域的智慧影像監控系統，透過 AI 影像辨識技術判斷是否有人員異常侵入，並在偵測到事件後，將事件資訊與關鍵片段傳送至監控室，由指示燈與蜂鳴器發出警示，作為安全監控與人員管理的基礎原型。
       </p>
     </section>
 
     <section class="section">
-      <h2>材料</h2>
-      <ul>
-        <li>Raspberry Pi 4 / 5</li>
-        <li>Raspberry Pi Camera 模組或 USB Webcam</li>
-        <li>LED 指示燈</li>
-        <li>蜂鳴器</li>
-        <li>伺服馬達（進階擴充，可選）</li>
-        <li>Python 與影像辨識模型環境</li>
+      <div class="section-title"><div class="section-no">02</div><h2>應用情境</h2></div>
+      <p>
+        本系統主要安裝於工廠或實驗室等需要安全管制的場所，尤其適合入口區、重要設備區與限制進入區。系統的重點是偵測是否有異常人員進入監控區域，讓管理者能即時掌握現場狀況。
+      </p>
+      <p>
+        系統運作時，USB 攝影機會插在攝影 Pi 上，持續擷取入口與重要區域畫面，再交由節點 Pi 進行 AI 人物辨識。當系統判定有人員異常侵入、可疑停留或進入限制區域時，便立即保留事件片段與時間資訊，並透過網路傳送至後端伺服器與監控室，最後由監控端畫面、指示燈與蜂鳴器提醒值班人員即時處理。
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><div class="section-no">03</div><h2>材料</h2></div>
+      <ul class="list">
+        <li>Raspberry Pi 4 / 5 × 2（攝影 Pi、節點 Pi / 監控端整合）</li>
+        <li>USB Webcam × 1（連接於攝影 Pi）</li>
+        <li>人體熱源感測器 × 1（可作為輔助感測裝置）</li>
+        <li>LED 指示燈（設置於監控室）</li>
+        <li>蜂鳴器（設置於監控室）</li>
+        <li>Python 與網路上現成的 AI 偵測模型環境（例如 YOLO）</li>
+        <li>區域網路傳輸環境（Wi‑Fi 或 Ethernet）</li>
       </ul>
     </section>
 
     <section class="section">
-      <h2>系統功能</h2>
-      <ul>
-        <li>即時影像擷取</li>
-        <li>人物或目標物件辨識</li>
-        <li>偵測到目標時啟動燈光或蜂鳴器警示</li>
-        <li>擷取事件畫面並保存</li>
-        <li>可延伸為雲端通知或鏡頭追蹤系統</li>
-      </ul>
+      <div class="section-title"><div class="section-no">04</div><h2>系統功能</h2></div>
+      <div class="highlight-grid">
+        <div class="highlight-card">
+          <h3>即時影像擷取</h3>
+          <p>利用 USB 攝影機持續擷取入口區與重要區域的現場畫面，作為後續 AI 辨識依據。</p>
+        </div>
+        <div class="highlight-card">
+          <h3>異常人物辨識</h3>
+          <p>透過 AI 模型進行人物偵測，判斷是否有異常侵入、可疑停留或進入限制區域的情形。</p>
+        </div>
+        <div class="highlight-card">
+          <h3>監控室警示</h3>
+          <p>異常事件成立後，將結果傳送至監控室，並啟動指示燈、蜂鳴器與事件資訊顯示。</p>
+        </div>
+      </div>
     </section>
 
     <section class="section">
-      <h2>流程架構</h2>
-      <div class="flow-diagram">
-        <div class="flow-box"><div class="text">相機持續擷取監控畫面</div></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-box"><div class="text">Raspberry Pi 接收影像資料</div></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-box"><div class="text">影像辨識模型分析畫面內容</div></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-box"><div class="text">判斷是否出現人物或指定物件</div></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-box"><div class="text">若偵測成功，啟動警示並保存影像</div></div>
-        <div class="flow-arrow">↓</div>
-        <div class="flow-box"><div class="text">將結果顯示於監控介面</div></div>
+      <div class="section-title"><div class="section-no">05</div><h2>流程架構</h2></div>
+      <div class="flow-panel">
+        <svg viewBox="0 0 1080 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="智慧影像監控系統流程架構圖">
+          <defs>
+            <linearGradient id="boxFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#23324b" />
+              <stop offset="100%" stop-color="#162236" />
+            </linearGradient>
+            <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <path d="M 0 0 L 12 6 L 0 12 z" fill="#60a5fa" />
+            </marker>
+          </defs>
+
+          <rect x="80" y="70" width="220" height="86" rx="16" fill="url(#boxFill)" stroke="#60a5fa" stroke-opacity=".45"/>
+          <text x="190" y="110" fill="#e5eefb" font-size="28" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">攝影 Pi</text>
+          <text x="190" y="138" fill="#cbd5e1" font-size="20" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">擷取現場影像</text>
+
+          <rect x="410" y="70" width="260" height="86" rx="16" fill="url(#boxFill)" stroke="#60a5fa" stroke-opacity=".45"/>
+          <text x="540" y="110" fill="#e5eefb" font-size="28" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">節點 Pi 辨識</text>
+          <text x="540" y="138" fill="#cbd5e1" font-size="20" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">AI 人物辨識</text>
+
+          <line x1="300" y1="113" x2="410" y2="113" stroke="#60a5fa" stroke-width="4" marker-end="url(#arrow)"/>
+          <line x1="540" y1="156" x2="540" y2="232" stroke="#60a5fa" stroke-width="4" marker-end="url(#arrow)"/>
+
+          <polygon points="540,250 660,350 540,450 420,350" fill="url(#boxFill)" stroke="#60a5fa" stroke-opacity=".45"/>
+          <text x="540" y="340" fill="#e5eefb" font-size="28" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">是否為</text>
+          <text x="540" y="374" fill="#e5eefb" font-size="28" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">異常事件</text>
+
+          <rect x="70" y="308" width="220" height="86" rx="16" fill="url(#boxFill)" stroke="#60a5fa" stroke-opacity=".45"/>
+          <text x="180" y="346" fill="#e5eefb" font-size="28" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">丟棄影像</text>
+          <text x="350" y="304" fill="#bfdbfe" font-size="24" font-weight="700" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">否</text>
+          <line x1="420" y1="350" x2="290" y2="350" stroke="#60a5fa" stroke-width="4" marker-end="url(#arrow)"/>
+
+          <text x="590" y="486" fill="#bfdbfe" font-size="24" font-weight="700" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="start">是</text>
+          <line x1="540" y1="450" x2="540" y2="500" stroke="#60a5fa" stroke-width="4" marker-end="url(#arrow)"/>
+
+          <rect x="400" y="510" width="280" height="86" rx="16" fill="url(#boxFill)" stroke="#60a5fa" stroke-opacity=".45"/>
+          <text x="540" y="548" fill="#e5eefb" font-size="24" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">儲存事件片段</text>
+          <text x="540" y="576" fill="#cbd5e1" font-size="20" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">至後端伺服器</text>
+
+          <line x1="680" y1="553" x2="810" y2="553" stroke="#60a5fa" stroke-width="4" marker-end="url(#arrow)"/>
+
+          <rect x="810" y="510" width="200" height="86" rx="16" fill="url(#boxFill)" stroke="#60a5fa" stroke-opacity=".45"/>
+          <text x="910" y="548" fill="#e5eefb" font-size="28" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">儀表盤</text>
+          <text x="910" y="576" fill="#cbd5e1" font-size="20" font-family="Noto Sans TC, Microsoft JhengHei, sans-serif" text-anchor="middle">顯示與警示</text>
+        </svg>
+      </div>
+      <div class="flow-note">流程架構：攝影 Pi 擷取現場影像後交由節點 Pi 執行 AI 人物辨識；若非異常事件則丟棄影像，若為異常事件則儲存事件片段並送至儀表盤顯示與警示。</div>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><div class="section-no">06</div><h2>資料傳遞方式</h2></div>
+      <p>
+        USB 攝影機先將影像輸入攝影 Pi，再交由節點 Pi 進行 AI 分析。當系統判定有人員異常侵入或可疑停留時，節點 Pi 會產生事件資料，包含偵測結果、時間資訊與關鍵片段，並透過區域網路傳送至後端伺服器與監控室。
+      </p>
+      <p>
+        為降低網路負擔，系統以傳送事件資訊與關鍵片段為主，而不是持續傳送全部影像串流。實作上可評估採用 MQTT、HTTP 或 Socket 作為資料傳遞方式。
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><div class="section-no">07</div><h2>平面配置圖</h2></div>
+      <div class="image-frame">
+        <img class="diagram-image" src="smart_surveillance_system_layout_diagram.png" alt="智慧影像監控系統平面配置圖" />
+      </div>
+      <div class="caption">
+        平面配置圖：現場端由 USB 攝影機與 Raspberry Pi 執行人物偵測，並透過區域網路將事件資料傳送至監控室，由監控畫面、指示燈與蜂鳴器進行顯示與警示。
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><div class="section-no">08</div><h2>組員與分工</h2></div>
+      <div class="member-grid">
+        <div class="member-card">
+          <div class="member-role">Team Member 01</div>
+          <h3>解皓翔｜B11213060</h3>
+          <p>負責系統情境規劃、Raspberry Pi 端程式開發、AI 模型部署，以及偵測端與監控端資料傳遞整合。</p>
+        </div>
+        <div class="member-card">
+          <div class="member-role">Team Member 02</div>
+          <h3>高睬薇｜B11313109</h3>
+          <p>負責報告撰寫、資料整理、系統整合、硬體規劃與監控室警示模組設計、簡報內容設計。</p>
+        </div>
+        <div class="member-card">
+          <div class="member-role">Team Member 03</div>
+          <h3>江亮儀｜B11313115</h3>
+          <p>負責平面配置圖設計、資料整理、攝影機串接，包含指示燈、蜂鳴器與監控端顯示內容測試。</p>
+        </div>
       </div>
     </section>
 
