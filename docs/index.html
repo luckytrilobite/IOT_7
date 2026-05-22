@@ -207,6 +207,26 @@
       .hero { padding: 8px 4px 20px; }
       .map { font-size: 0.82rem; }
     }
+
+    .list {
+      list-style: none;
+      margin-top: 6px;
+    }
+
+    .list li {
+      position: relative;
+      padding-left: 22px;
+      margin: 10px 0;
+    }
+
+    .list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--primary);
+      font-weight: 800;
+    }
   </style>
 </head>
 <body>
@@ -227,15 +247,22 @@
       </p>
     </section>
 
-    
-
-    
-
-    
-
     <section class="section">
       <h2>流程架構</h2>
       <img class="plan-image" src="system_architecture_flowchart_with_image_processin.png" alt="智慧影像監控系統流程架構圖" />
+      
+    </section>
+
+    <section class="section">
+      <h2>材料</h2>
+      <ul class="list">
+        <li>Raspberry Pi 4 / 5 × 1</li>
+        <li>USB Webcam × 1（連接於攝影 Pi）</li>
+        <li>LED 指示燈（設置於監控室）</li>
+        <li>蜂鳴器（設置於監控室）</li>
+        <li>Python 與網路上現成的 AI 偵測模型環境（例如 YOLO）</li>
+        <li>區域網路傳輸環境（Wi‑Fi 或 Ethernet）</li>
+      </ul>
       
     </section>
 
