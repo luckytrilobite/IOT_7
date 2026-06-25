@@ -32,19 +32,17 @@ threshold = float(np.load("./LSTM/threshold.npy"))
 class LSTMAE(nn.Module):
     def __init__(self, input_dim, hidden_dim):
         super().__init__()
+
         self.encoder = nn.LSTM(input_dim, hidden_dim, batch_first=True)
-        self.decoder = nn.LSTM(hidden_dim, hidden_dim, batch_first=True)
-        self.fc = nn.Linear(hidden_dim, input_dim)
+        self.decoder = nn.LSTM(hidden_dim, input_dim, batch_first=True)
 
     def forward(self, x):
         _, (h, _) = self.encoder(x)
 
-        z = h[-1]  # (B, H)
-        z = z.unsqueeze(1).repeat(1, x.size(1), 1)
+        h = h[-1]  # (B, H)
+        h_repeat = h.unsqueeze(1).repeat(1, x.size(1), 1)
 
-        out, _ = self.decoder(z)
-        out = self.fc(out)
-
+        out, _ = self.decoder(h_repeat)
         return out
 
 model = LSTMAE(INPUT_DIM, HIDDEN_DIM).to(device)
