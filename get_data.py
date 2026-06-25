@@ -1,132 +1,99 @@
 import cv2
 import time
-import threading
-import json
-import requests
+import os
+import numpy as np
+import torch
+import torch.nn as nn
 from collections import deque
 from ultralytics import YOLO
-import paho.mqtt.client as mqtt
-import ssl
 
 # =========================
 # CONFIG
 # =========================
-BROKER = "f9c1e85ec144455c9671301c943e8b29.s1.eu.hivemq.cloud"
-TOPIC_SKELETON = "yolo/skeleton"
-TOPIC_LSTM = "LSTM/errorpose"
-UPLOAD_URL = "http://127.0.0.1:8004/get_video"
+STREAM_URL = "rtmp://172.20.10.8/live/stream"
 
-BUFFER_SEC = 5
+SEQ_LEN = 30
+FPS = 20
+
+PRE_SEC = 5
+POST_SEC = 3
+
+PRE_BUF_LEN = PRE_SEC * FPS
+POST_BUF_LEN = POST_SEC * FPS
+
+SAVE_DIR = "./videos"
+os.makedirs(SAVE_DIR, exist_ok=True)
 
 # =========================
-# SHARED FRAME QUEUE
+# LOAD PARAMS
 # =========================
-frame_queue = deque(maxlen=30)   # latest frames
+mean = np.load("./LSTM/norm_mean.npy")
+std = np.load("./LSTM/norm_std.npy")
+threshold = float(np.load("./LSTM/threshold.npy"))
 
 # =========================
-# BUFFER FOR VIDEO THREAD
+# MODEL
 # =========================
-frame_buffer = deque()
+class LSTMAE(nn.Module):
+    def __init__(self, input_dim, hidden_dim):
+        super().__init__()
+        self.encoder = nn.LSTM(input_dim, hidden_dim, batch_first=True)
+        self.decoder = nn.LSTM(hidden_dim, input_dim, batch_first=True)
+
+    def forward(self, x):
+        _, (h, _) = self.encoder(x)
+        h = h[-1]
+        h = h.unsqueeze(1).repeat(1, x.size(1), 1)
+        return self.decoder(h)[0]
+
+model = LSTMAE(34, 64)
+model.load_state_dict(torch.load("./LSTM/lstm_ae.pth", map_location="cpu"))
+model.eval()
+
+# =========================
+# YOLO
+# =========================
+yolo = YOLO("yolov8n-pose.pt").to("cpu")
+
+# =========================
+# BUFFER
+# =========================
+frame_buffer = deque(maxlen=PRE_BUF_LEN)
+seq_buffer = deque(maxlen=SEQ_LEN)
+
+# =========================
+# STATE
+# =========================
 recording = False
-recorded_frames = []
-
-lock = threading.Lock()
-
-# =========================
-# MODEL + MQTT
-# =========================
-model = YOLO("yolov8n-pose.pt")
-
-client = mqtt.Client()
-
-client.username_pw_set("PI_IOT", "Pi123456")
-
-client.tls_set(
-    ca_certs=None,
-    certfile=None,
-    keyfile=None,
-    cert_reqs=ssl.CERT_REQUIRED,
-    tls_version=ssl.PROTOCOL_TLS,
-)
-
-client.tls_insecure_set(False)
-
-client.connect(BROKER, 8883, 60)
-# =========================
-# THREAD 1: CAMERA PRODUCER
-# =========================
-def camera_thread():
-    cap = cv2.VideoCapture(0)
-    print("Camera thread started")
-
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            continue
-
-        ts = time.time()
-
-        # push to shared queue
-        frame_queue.append((ts, frame.copy()))
-
-        # optional display
-        if cv2.waitKey(1) == 27:
-            break
+post_counter = 0
+video_id = 0
+record_buffer = []
 
 # =========================
-# THREAD 2: YOLO CONSUMER + MQTT
+# SMOOTHING STATE
 # =========================
-def yolo_thread():
-    frame_id = 0
-    print("YOLO thread started")
+person_counter = 0
+PERSON_HOLD = 5
 
-    while True:
-        if len(frame_queue) == 0:
-            continue
+ema_error = 0.0
+alpha = 0.2
 
-        ts, frame = frame_queue[-1]
-        frame_id += 1
-
-        results = model(frame, verbose=False)
-
-        skeleton = None
-
-        for r in results:
-            if r.keypoints is None:
-                continue
-
-            kpts = r.keypoints.xy.cpu().numpy()
-
-            if len(kpts) > 0:
-                skeleton = kpts[0].reshape(-1).tolist()
-                break
-
-        if skeleton is None:
-            skeleton = [0.0] * 34
-
-        payload = {
-            "frame_id": frame_id,
-            "timestamp": ts,
-            "skeleton": skeleton
-        }
-
-        client.publish(TOPIC_SKELETON, json.dumps(payload), qos=1)
+is_anomaly = False
 
 # =========================
-# THREAD 3: BUFFER + VIDEO + ANOMALY
+# SAVE VIDEO
 # =========================
-def upload_video(frames):
+def save_video(frames, vid):
     if len(frames) == 0:
         return
 
-    frames = [f for _, f in frames]
-
     h, w = frames[0].shape[:2]
+    path = f"{SAVE_DIR}/event_{vid}.mp4"
 
     out = cv2.VideoWriter(
-        "anomaly.mp4",
+        path,
         cv2.VideoWriter_fourcc(*"mp4v"),
-        20,
+        FPS,
         (w, h)
     )
 
@@ -134,81 +101,158 @@ def upload_video(frames):
         out.write(f)
 
     out.release()
+    print(f"[SAVE] {path}")
 
-    try:
-        files = {"file": open("anomaly.mp4", "rb")}
-        requests.post(UPLOAD_URL, files=files)
-        print("UPLOAD DONE")
-    except Exception as e:
-        print("upload failed:", e)
+# =========================
+# SAFE SKELETON
+# =========================
+def get_skeleton(result):
+    if result.keypoints is None:
+        return None
 
+    kpts = result.keypoints.xy.cpu().numpy()
+    if kpts is None or len(kpts) == 0:
+        return None
 
-def buffer_thread():
-    global recording, frame_buffer, recorded_frames
+    sk = kpts[0].reshape(-1)
+    if len(sk) != 34:
+        return None
 
-    print("Buffer thread started")
+    return sk
 
-    def on_message(client, userdata, msg):
-        global recording, recorded_frames
+# =========================
+# STREAM
+# =========================
+cap = cv2.VideoCapture(STREAM_URL)
 
-        data = json.loads(msg.payload.decode())
-        flag = data.get("errorpose", False)
+if not cap.isOpened():
+    print("Cannot open stream")
+    exit()
 
-        # =========================
-        # START
-        # =========================
-        if flag and not recording:
-            print("START RECORD")
+print("Stream opened")
 
-            recording = True
-            recorded_frames = list(frame_buffer)
+# =========================
+# LOOP
+# =========================
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        continue
 
-        # =========================
-        # STOP
-        # =========================
-        elif not flag and recording:
-            print("STOP RECORD")
+    # =========================
+    # YOLO
+    # =========================
+    results = yolo(frame, verbose=False)
 
+    skeleton = None
+    detected = False
+
+    for r in results:
+        skeleton = get_skeleton(r)
+        if skeleton is not None:
+            detected = True
+            break
+
+    # =========================
+    # PERSON FILTER
+    # =========================
+    if detected:
+        person_counter = 0
+    else:
+        person_counter += 1
+
+    is_person = person_counter < PERSON_HOLD
+
+    if not is_person or skeleton is None:
+        skeleton = np.zeros(34, dtype=np.float32)
+
+    skeleton = np.asarray(skeleton, dtype=np.float32)
+
+    # =========================
+    # NORMALIZE
+    # =========================
+    skeleton_norm = (skeleton - mean) / std
+    seq_buffer.append(skeleton_norm)
+
+    # =========================
+    # LSTM AE
+    # =========================
+    error = 0.0
+
+    if len(seq_buffer) == SEQ_LEN:
+        x = torch.tensor(np.array(seq_buffer), dtype=torch.float32).unsqueeze(0)
+
+        with torch.no_grad():
+            recon = model(x)
+            error = ((x - recon) ** 2).mean().item()
+
+    # =========================
+    # EMA SMOOTH
+    # =========================
+    ema_error = alpha * error + (1 - alpha) * ema_error
+
+    # =========================
+    # HYSTERESIS (ONLY ONE SOURCE OF TRUTH)
+    # =========================
+    ON_TH = threshold
+    OFF_TH = threshold * 0.7
+
+    if ema_error > ON_TH:
+        is_anomaly = True
+    elif ema_error < OFF_TH:
+        is_anomaly = False
+
+    if not is_person:
+        is_anomaly = False
+        ema_error = 0.0   # 🔥 防止殘留記憶污染下一段
+        seq_buffer.clear()
+
+    # =========================
+    # FRAME BUFFER
+    # =========================
+    frame_buffer.append(frame.copy())
+
+    # =========================
+    # EVENT START
+    # =========================
+    if is_anomaly and not recording:
+        print("[EVENT START]")
+        recording = True
+        record_buffer = list(frame_buffer)
+
+    # =========================
+    # RECORDING
+    # =========================
+    if recording:
+        record_buffer.append(frame.copy())
+
+        if not is_anomaly:
+            post_counter += 1
+        else:
+            post_counter = 0
+
+        if post_counter >= POST_BUF_LEN:
+            print("[EVENT END]")
+            save_video(record_buffer, video_id)
+
+            video_id += 1
             recording = False
-            upload_video(recorded_frames)
+            post_counter = 0
 
-    client.subscribe(TOPIC_LSTM)
-    client.on_message = on_message
-    client.loop_start()
+    # =========================
+    # DEBUG
+    # =========================
+    print({
+        "is_person": is_person,
+        "is_anomaly": is_anomaly,
+        "error": float(error),
+        "ema_error": float(ema_error)
+    })
 
-    while True:
-        if len(frame_queue) == 0:
-            continue
+    cv2.imshow("stream", frame)
 
-        ts, frame = frame_queue[-1]
+    if cv2.waitKey(1) == 27:
+        break
 
-        # =========================
-        # 5-sec buffer
-        # =========================
-        frame_buffer.append((ts, frame.copy()))
-
-        while frame_buffer and ts - frame_buffer[0][0] > BUFFER_SEC:
-            frame_buffer.popleft()
-
-        # =========================
-        # record during anomaly
-        # =========================
-        if recording:
-            recorded_frames.append((ts, frame.copy()))
-
-# =========================
-# MAIN
-# =========================
-if __name__ == "__main__":
-
-    t1 = threading.Thread(target=camera_thread)
-    t2 = threading.Thread(target=yolo_thread)
-    t3 = threading.Thread(target=buffer_thread)
-
-    t1.start()
-    t2.start()
-    t3.start()
-
-    t1.join()
-    t2.join()
-    t3.join()
+cap.release()
+cv2.destroyAllWindows()
