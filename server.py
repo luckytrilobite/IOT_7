@@ -21,7 +21,7 @@ cursor = db.cursor()
 # =========================
 # STORAGE PATH
 # =========================
-SAVE_DIR = "videos"
+SAVE_DIR = "/home/hsieh/SQL/save_videos"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 # =========================

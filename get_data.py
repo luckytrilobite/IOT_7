@@ -69,8 +69,6 @@ def camera_thread():
         # push to shared queue
         frame_queue.append((ts, frame.copy()))
 
-        cv2.imshow(frame)
-
         # optional display
         if cv2.waitKey(1) == 27:
             break
