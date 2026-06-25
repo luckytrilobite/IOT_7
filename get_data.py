@@ -6,11 +6,15 @@ import requests
 from collections import deque
 from ultralytics import YOLO
 import paho.mqtt.client as mqtt
+import ssl
+
+
+
 
 # =========================
 # CONFIG
 # =========================
-BROKER = "127.0.0.1"
+BROKER = "f9c1e85ec144455c9671301c943e8b29.s1.eu.hivemq.cloud"
 TOPIC_SKELETON = "yolo/skeleton"
 TOPIC_LSTM = "LSTM/errorpose"
 UPLOAD_URL = "http://127.0.0.1:8004/get_video"
@@ -37,7 +41,10 @@ lock = threading.Lock()
 model = YOLO("yolov8n-pose.pt")
 
 client = mqtt.Client()
-client.connect(BROKER, 1883, 60)
+
+client.tls_set(cert_reqs=ssl.CERT_REQUIRED)
+client.tls_insecure_set(False)
+client.connect(BROKER, 8883, 60)
 
 # =========================
 # THREAD 1: CAMERA PRODUCER

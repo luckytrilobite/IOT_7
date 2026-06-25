@@ -4,11 +4,12 @@ import torch
 import torch.nn as nn
 import paho.mqtt.client as mqtt
 from collections import deque
+import ssl
 
 # =========================
 # CONFIG
 # =========================
-BROKER = "127.0.0.1"
+BROKER = "f9c1e85ec144455c9671301c943e8b29.s1.eu.hivemq.cloud"
 
 TOPIC_IN = "yolo/skeleton"
 TOPIC_OUT = "LSTM/errorpose"
@@ -58,7 +59,10 @@ buffer = deque(maxlen=SEQ_LEN)
 # MQTT
 # =========================
 client = mqtt.Client()
-client.connect(BROKER, 1883, 60)
+
+client.tls_set(cert_reqs=ssl.CERT_REQUIRED)
+client.tls_insecure_set(False)
+client.connect(BROKER, 8883, 60)
 
 # =========================
 # CALLBACK
