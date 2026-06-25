@@ -8,9 +8,6 @@ from ultralytics import YOLO
 import paho.mqtt.client as mqtt
 import ssl
 
-
-
-
 # =========================
 # CONFIG
 # =========================
@@ -42,10 +39,19 @@ model = YOLO("yolov8n-pose.pt")
 
 client = mqtt.Client()
 
-client.tls_set(cert_reqs=ssl.CERT_REQUIRED)
-client.tls_insecure_set(False)
-client.connect(BROKER, 8883, 60)
+client.username_pw_set("PI_IOT", "Pi123456")
 
+client.tls_set(
+    ca_certs=None,
+    certfile=None,
+    keyfile=None,
+    cert_reqs=ssl.CERT_REQUIRED,
+    tls_version=ssl.PROTOCOL_TLS,
+)
+
+client.tls_insecure_set(False)
+
+client.connect(BROKER, 8883, 60)
 # =========================
 # THREAD 1: CAMERA PRODUCER
 # =========================
@@ -62,6 +68,8 @@ def camera_thread():
 
         # push to shared queue
         frame_queue.append((ts, frame.copy()))
+
+        cv2.imshow(frame)
 
         # optional display
         if cv2.waitKey(1) == 27:
@@ -104,7 +112,7 @@ def yolo_thread():
             "skeleton": skeleton
         }
 
-        client.publish(TOPIC_SKELETON, json.dumps(payload))
+        client.publish(TOPIC_SKELETON, json.dumps(payload), qos=1)
 
 # =========================
 # THREAD 3: BUFFER + VIDEO + ANOMALY

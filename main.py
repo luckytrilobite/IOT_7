@@ -60,8 +60,18 @@ buffer = deque(maxlen=SEQ_LEN)
 # =========================
 client = mqtt.Client()
 
-client.tls_set(cert_reqs=ssl.CERT_REQUIRED)
+client.username_pw_set("computer_IOT", "Pc123456")
+
+client.tls_set(
+    ca_certs=None,
+    certfile=None,
+    keyfile=None,
+    cert_reqs=ssl.CERT_REQUIRED,
+    tls_version=ssl.PROTOCOL_TLS,
+)
+
 client.tls_insecure_set(False)
+
 client.connect(BROKER, 8883, 60)
 
 # =========================
@@ -71,6 +81,7 @@ def on_message(client, userdata, msg):
     global buffer
 
     data = json.loads(msg.payload.decode())
+    print(data)
     skeleton = np.array(data["skeleton"], dtype=np.float32)
 
     # =========================
