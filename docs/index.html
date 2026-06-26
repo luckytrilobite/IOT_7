@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>智慧影像監控系統</title>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -57,6 +58,8 @@
       margin-top: 22px;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
       backdrop-filter: blur(6px);
+
+      overflow: hidden;
     }
 
     .section h2 {
@@ -67,19 +70,12 @@
       padding-left: 12px;
     }
 
-    .section p, .section li {
+    p, li {
       color: #e2e8f0;
       font-size: 1rem;
     }
 
-    .section p + p {
-      margin-top: 14px;
-    }
-
-    ul {
-      list-style: none;
-      margin-top: 8px;
-    }
+    ul { list-style: none; }
 
     li {
       position: relative;
@@ -93,93 +89,74 @@
       font-weight: bold;
       position: absolute;
       left: 0;
-      top: 0;
     }
 
-    .flow-diagram {
+    /* ===== flow ===== */
+    .flow-container {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 10px;
-      margin-top: 6px;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
     }
 
-    .flow-box {
-      width: min(100%, 780px);
+    .flow-step {
+      display: flex;
+      align-items: center;
+    }
+
+    .flow-card {
+      min-width: 160px;
+      max-width: 220px;
+      padding: 16px 14px;
+      text-align: center;
+
       background: rgba(30, 41, 59, 0.95);
       border: 1px solid rgba(96, 165, 250, 0.28);
       border-radius: 16px;
-      padding: 16px 18px;
+
       color: #e2e8f0;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-      text-align: center;
       font-weight: 500;
+      line-height: 1.5;
+
+      box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+      transition: 0.2s ease;
+    }
+
+    .flow-card:hover {
+      transform: translateY(-4px);
+      border-color: #60a5fa;
     }
 
     .flow-arrow {
-      font-size: 1.9rem;
+      font-size: 22px;
       color: #60a5fa;
-      line-height: 1;
-      font-weight: 700;
+      font-weight: bold;
+      padding: 0 4px;
     }
 
-    .grid-two {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 10px;
+    @media (max-width: 768px) {
+      .flow-container {
+        flex-direction: column;
+      }
+
+      .flow-arrow {
+        transform: rotate(90deg);
+      }
     }
 
-    .mini-card {
-      background: rgba(30, 41, 59, 0.76);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      border-radius: 16px;
-      padding: 18px 18px;
-    }
-
-    .mini-card h3 {
-      color: #bfdbfe;
-      margin-bottom: 8px;
-      font-size: 1.08rem;
-    }
-
-    .plan-image {
-      margin-top: 14px;
-      width: 100%;
-      border-radius: 18px;
-      border: 1px solid rgba(96, 165, 250, 0.25);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
-      display: block;
-      background: rgba(2, 6, 23, 0.8);
-    }
-
-    .caption {
-      margin-top: 12px;
-      color: #cbd5e1;
-      text-align: center;
-      font-size: 0.96rem;
-    }
-
-    .map {
-      margin-top: 8px;
-      padding: 18px;
-      border-radius: 16px;
-      background: rgba(2, 6, 23, 0.72);
-      border: 1px solid rgba(96, 165, 250, 0.22);
-      color: #dbeafe;
-      overflow-x: auto;
-      white-space: pre;
-      font-family: "Consolas", "Courier New", monospace;
-      font-size: 0.95rem;
-      line-height: 1.7;
-    }
-
+    /* ===== member 修正（重點） ===== */
     .member {
       margin-top: 14px;
       padding: 16px 18px;
       border-radius: 16px;
       background: rgba(30, 41, 59, 0.76);
       border: 1px solid rgba(148, 163, 184, 0.18);
+
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .member h3 {
@@ -188,49 +165,52 @@
       margin-bottom: 6px;
     }
 
+    .member p {
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* ===== video ===== */
+    .video {
+      display: flex;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .video iframe {
+      width: 100%;
+      max-width: 900px;
+      height: 420px;
+      border-radius: 16px;
+      border: 0;
+    }
+
+    @media (max-width: 640px) {
+      .video iframe {
+        height: 240px;
+      }
+    }
+
     .footer {
       text-align: center;
       margin-top: 30px;
       color: #94a3b8;
       font-size: 0.95rem;
     }
-
-    @media (max-width: 820px) {
-      .grid-two {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .container { padding-top: 34px; }
-      .section { padding: 22px 18px; }
-      .hero { padding: 8px 4px 20px; }
-      .map { font-size: 0.82rem; }
-    }
-
-    .list {
-      list-style: none;
-      margin-top: 6px;
-    }
-
-    .list li {
-      position: relative;
-      padding-left: 22px;
-      margin: 10px 0;
-    }
-
-    .list li::before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: var(--primary);
-      font-weight: 800;
+    .plan-image {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 18px;
     }
   </style>
 </head>
+
 <body>
   <div class="container">
+
     <header class="hero">
       <div class="tag">IoT Project</div>
       <h1>智慧影像監控系統</h1>
@@ -243,65 +223,118 @@
     <section class="section">
       <h2>目標</h2>
       <p>
-        建立一套可即時監控工廠或實驗室現場畫面的智慧影像監控系統，利用 AI 影像辨識技術判斷畫面中是否出現人物、特定物件或異常動作，並在偵測到目標後，將事件資訊傳送至監控室，由指示燈與蜂鳴器發出告警，作為安全監控與人員管理的基礎原型。
+        建立一套可即時監控工廠或實驗室現場畫面的智慧影像監控系統，利用 AI 影像辨識技術判斷畫面中是否出現人物、特定物件或異常動作，並在偵測到目標後，將事件資訊傳送至監控室，由指示燈與蜂鳴器發出告警。
       </p>
     </section>
 
     <section class="section">
-      <h2>流程架構</h2>
-      <img class="plan-image" src="system_architecture_flowchart_with_image_processin.png" alt="智慧影像監控系統流程架構圖" />
-      
-    </section>
-
-    <section class="section">
-      <h2>材料</h2>
-      <ul class="list">
-        <li>Raspberry Pi 4 / 5 × 1</li>
-        <li>USB Webcam × 1（連接於攝影 Pi）</li>
-        <li>LED 指示燈（設置於監控室）</li>
-        <li>蜂鳴器（設置於監控室）</li>
-        <li>Python 與網路上現成的 AI 偵測模型環境（例如 YOLO）</li>
-        <li>區域網路傳輸環境（Wi‑Fi 或 Ethernet）</li>
-      </ul>
-      
-    </section>
-
-    <section class="section">
-      <h2>目前成果</h2>
-      <img class="plan-image" src="./01.png" alt="成果展示" />
-      
+      <h2>原本流程架構</h2>
+      <img class="plan-image" src="system_architecture_flowchart_with_image_processin.png" />
     </section>
 
     <section class="section">
       <h2>問題</h2>
       <div class="member">
-        <h3>感測器</h3>
-        <p>感測器是否真的需要。</p>
+        <h3>效能不足</h3>
+        <p>在樹梅派啟動 YOLO pose + 影像 buffer 時會卡死</p>
       </div>
+    </section>
+
+    <section class="section">
+      <h2>流程架構</h2>
+
+      <div class="flow-container">
+
+        <div class="flow-step">
+          <div class="flow-card">影像獲取<br><small>Camera / RTSP</small></div>
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-step">
+          <div class="flow-card">RTMP 串流</div>
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-step">
+          <div class="flow-card">傳送到 Server</div>
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-step">
+          <div class="flow-card">YOLO Pose + LSTM AE<br>異常偵測</div>
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-step">
+          <div class="flow-card">儲存異常片段<br>到資料夾</div>
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-step">
+          <div class="flow-card">API 提供影片<br>給網站播放</div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>成果</h2>
+
+      <div class="video">
+        <iframe
+          src="https://www.youtube.com/embed/GdmlRR4TpUg"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>問題</h2>
+
       <div class="member">
-        <h3>架構</h3>
-        <p>是否符合課程需求</p>
+        <h3>影像會被切掉/h3>
+        <p>可能是RTMP、buffer在合成影像時獲取畫面不穩定</p>
       </div>
-      
+
+      <div class="member">
+        <h3>LSTM AE 不準確</h3>
+        <p>資料集不夠大，而且AI架構也不對(時序上的分析不完善)</p>
+      </div>
+
+      <div class="member">
+        <h3>影像檔傳送</h3>
+        <p>目前影像傳送到PI的部分未完成(但PI裡有可以用網頁觀看的影像)</p>
+      </div>
     </section>
 
     <section class="section">
       <h2>組員與分工</h2>
+
       <div class="member">
         <h3>解皓翔｜B11213060</h3>
-        <p>負責系統整合、Raspberry Pi 端程式開發、攝影機串接、AI 模型部署，以及偵測端與監控端資料傳遞整合。</p>
+        <p>系統整合、Raspberry Pi、AI 模型部署</p>
       </div>
+
       <div class="member">
         <h3>高睬薇｜B11313109</h3>
-        <p>負責報告撰寫、資料整理、系統情境規劃、平面配置圖與簡報內容設計。</p>
+        <p>報告撰寫、系統規劃、簡報設計</p>
       </div>
+
       <div class="member">
         <h3>江亮儀｜B11313115</h3>
-        <p>負責硬體規劃與監控室警示模組設計，包含指示燈、蜂鳴器與監控端顯示內容測試。</p>
+        <p>Raspberry Pi 程式、API、攝影機串接</p>
       </div>
     </section>
 
-    <div class="footer">智慧影像監控系統｜專題提案</div>
+    <div class="footer">
+      智慧影像監控系統｜專題提案
+    </div>
+
   </div>
 </body>
 </html>
